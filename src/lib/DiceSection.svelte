@@ -53,63 +53,70 @@
 	</div>
 	
 	<div class="section-content">
-		<div class="controls">
-			<div class="dpad-container">
-				<h3>Registrar Jogada</h3>
-				<div class="dpad">
-					{#each [1, 2, 3, 4, 5, 6] as value}
-						<button 
-							class="dpad-btn" 
-							style="border-color: {color}" 
-							on:click={() => registerThrow(value)}
-							disabled={isSimulating}
-						>
-							{value}
-						</button>
-					{/each}
-				</div>
-				
-				<div class="simulation-controls">
-					<button 
-						class="sim-btn" 
-						on:click={() => simulate(10)}
-						disabled={isSimulating}
-					>
-						+10
-					</button>
-					<button 
-						class="sim-btn" 
-						on:click={() => simulate(25)}
-						disabled={isSimulating}
-					>
-						+25
-					</button>
-					<div class="custom-sim">
-						<input 
-							type="number" 
-							bind:value={customSimulationCount}
-							min="1" 
-							max="1000"
-							disabled={isSimulating}
-						>
-						<button 
-							class="sim-btn" 
-							on:click={() => simulate(customSimulationCount)}
-							disabled={isSimulating}
-						>
-							+{customSimulationCount}
-						</button>
-					</div>
-				</div>
-				
-				<button class="clear-btn" on:click={clearData} disabled={isSimulating}>
-					Limpar
-				</button>
-			</div>
-		</div>
-		
 		<div class="histogram-container">
 			<Histogram {diceType} {color} />
+		</div>
+		
+		<div class="controls">
+			<div class="controls-row">
+				<div class="simulation-section">
+					<h3>Simulação</h3>
+					<div class="simulation-controls">
+						<button 
+							class="sim-btn" 
+							style="border-color: {color}; color: {color}; --hover-bg: {color}"
+							on:click={() => simulate(10)}
+							disabled={isSimulating}
+						>
+							+10
+						</button>
+						<button 
+							class="sim-btn" 
+							style="border-color: {color}; color: {color}; --hover-bg: {color}"
+							on:click={() => simulate(25)}
+							disabled={isSimulating}
+						>
+							+25
+						</button>
+						<div class="custom-sim">
+							<input 
+								type="number" 
+								bind:value={customSimulationCount}
+								min="1" 
+								max="1000"
+								disabled={isSimulating}
+							>
+							<button 
+								class="sim-btn" 
+								style="border-color: {color}; color: {color}; --hover-bg: {color}"
+								on:click={() => simulate(customSimulationCount)}
+								disabled={isSimulating}
+							>
+								+{customSimulationCount}
+							</button>
+						</div>
+					</div>
+					<button class="clear-btn" on:click={clearData} disabled={isSimulating}>
+						Limpar
+					</button>
+				</div>
+				
+				<div class="dpad-container">
+					<h3>Registrar Jogada</h3>
+					<div class="dpad">
+						{#each [1, 2, 3, 4, 5, 6] as value}
+							<button 
+								class="dpad-btn" 
+								style="border-color: {color}" 
+								on:click={() => registerThrow(value)}
+								disabled={isSimulating}
+							>
+								{value}
+							</button>
+						{/each}
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
@@ -157,12 +164,33 @@
 	
 	.section-content {
 		display: flex;
-		gap: 30px;
+		flex-direction: column;
+		gap: 20px;
 		flex: 1;
 	}
 	
 	.controls {
-		flex: 0 0 300px;
+		display: flex;
+		justify-content: center;
+	}
+	
+	.controls-row {
+		display: flex;
+		gap: 40px;
+		align-items: flex-start;
+	}
+	
+	.simulation-section {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 15px;
+	}
+	
+	.simulation-section h3 {
+		margin: 0;
+		color: #555;
+		font-size: 1.1rem;
 	}
 	
 	.dpad-container h3 {
@@ -224,9 +252,8 @@
 	
 	.sim-btn {
 		padding: 8px 16px;
-		border: 1px solid #3498db;
+		border: 1px solid;
 		background: white;
-		color: #3498db;
 		border-radius: 4px;
 		cursor: pointer;
 		font-size: 0.9rem;
@@ -234,7 +261,7 @@
 	}
 	
 	.sim-btn:hover:not(:disabled) {
-		background: #3498db;
+		background: var(--hover-bg, #3498db);
 		color: white;
 	}
 	
@@ -269,13 +296,17 @@
 		min-height: 300px;
 	}
 	
+	.dpad-container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	
 	@media (max-width: 768px) {
-		.section-content {
+		.controls-row {
 			flex-direction: column;
-		}
-		
-		.controls {
-			flex: none;
+			gap: 20px;
+			align-items: center;
 		}
 	}
 </style>

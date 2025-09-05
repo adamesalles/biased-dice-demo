@@ -9,9 +9,9 @@
 	
 	let svgElement: SVGSVGElement;
 	
-	const margin = { top: 20, right: 30, bottom: 40, left: 50 };
+	const margin = { top: 20, right: 20, bottom: 40, left: 70 };
 	const width = 600 - margin.left - margin.right;
-	const height = 300 - margin.top - margin.bottom;
+	const height = 280 - margin.top - margin.bottom;
 	
 	$: if (svgElement && $diceData) {
 		updateHistogram($diceData[diceType]);
@@ -53,14 +53,18 @@
 			.call(d3.axisLeft(yScale).tickFormat(d3.format(".1%")))
 			.append("text")
 			.attr("transform", "rotate(-90)")
-			.attr("y", -35)
+			.attr("y", -50)
 			.attr("x", -height / 2)
 			.attr("fill", "black")
 			.style("text-anchor", "middle")
 			.text("Probabilidade");
 		
-		// Baseline line at 1/6
+		// Bars container
+		g.append("g").attr("class", "bars");
+		
+		// Baseline line at 1/6 (after bars so it appears on top)
 		g.append("line")
+			.attr("class", "baseline-line")
 			.attr("x1", 0)
 			.attr("x2", width)
 			.attr("y1", yScale(1/6))
@@ -70,15 +74,13 @@
 			.attr("stroke-width", 2);
 		
 		g.append("text")
+			.attr("class", "baseline-text")
 			.attr("x", width - 5)
 			.attr("y", yScale(1/6) - 5)
 			.attr("fill", "#666")
 			.style("text-anchor", "end")
 			.style("font-size", "12px")
 			.text("1/6 (não viciado)");
-		
-		// Bars container
-		g.append("g").attr("class", "bars");
 	}
 	
 	function updateHistogram(data: { throws: number[], counts: number[] }) {
@@ -102,7 +104,7 @@
 			.call(d3.axisLeft(yScale).tickFormat(d3.format(".1%")))
 			.append("text")
 			.attr("transform", "rotate(-90)")
-			.attr("y", -35)
+			.attr("y", -50)
 			.attr("x", -height / 2)
 			.attr("fill", "black")
 			.style("text-anchor", "middle")
@@ -148,6 +150,14 @@
 			.text(d => d.count > 0 ? `${d.count} (${(d.probability * 100).toFixed(1)}%)` : "");
 		
 		labels.exit().remove();
+		
+		// Update baseline line position
+		g.select(".baseline-line")
+			.attr("y1", yScale(1/6))
+			.attr("y2", yScale(1/6));
+		
+		g.select(".baseline-text")
+			.attr("y", yScale(1/6) - 5);
 	}
 </script>
 
@@ -156,8 +166,8 @@
 	<svg 
 		bind:this={svgElement}
 		width="600" 
-		height="300"
-		viewBox="0 0 600 300"
+		height="280"
+		viewBox="0 0 600 280"
 		style="max-width: 100%; height: auto;"
 	></svg>
 </div>
@@ -165,10 +175,11 @@
 <style>
 	.histogram-container {
 		width: 100%;
-		padding: 20px;
+		padding: 20px 10px;
 		background: #fafafa;
 		border-radius: 8px;
 		border: 1px solid #eee;
+		box-sizing: border-box;
 	}
 	
 	h3 {

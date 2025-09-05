@@ -56,6 +56,10 @@
 			<svelte:component this={module.default} {selectedDice} onBack={backToMain} />
 		{/await}
 	{/if}
+	
+	<footer>
+		<p>Feito por Eduardo Adame</p>
+	</footer>
 </main>
 
 <style>
@@ -70,12 +74,19 @@
 	main {
 		min-height: 100vh;
 		padding: 20px;
+		padding-bottom: 0;
 		box-sizing: border-box;
+		display: flex;
+		flex-direction: column;
 	}
 
 	.main-screen {
 		max-width: 1400px;
 		margin: 0 auto;
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		margin-bottom: 30px;
 	}
 
 	h1 {
@@ -88,9 +99,9 @@
 
 	.dice-container {
 		display: flex;
-		flex-direction: column;
-		gap: 30px;
-		height: calc(100vh - 160px);
+		flex-direction: row;
+		gap: 20px;
+		flex: 1;
 	}
 
 	.loading {
@@ -108,8 +119,24 @@
 		}
 		
 		.dice-container {
+			flex-direction: column;
 			height: auto;
-			min-height: calc(100vh - 160px);
+			min-height: calc(100vh - 200px);
 		}
+	}
+	
+	footer {
+		background: #2c3e50;
+		color: white;
+		text-align: center;
+		padding: 15px 20px;
+		margin-top: auto;
+		margin-left: -20px;
+		margin-right: -20px;
+	}
+	
+	footer p {
+		margin: 0;
+		font-size: 0.9rem;
 	}
 </style>

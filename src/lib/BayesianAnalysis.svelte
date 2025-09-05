@@ -109,7 +109,7 @@
 		const legendData = [
 			{ label: 'Prior', color: '#bdc3c7', type: 'line' },
 			{ label: 'Posterior', color: currentColor, type: 'bar' },
-			{ label: 'Empírica', color: '#e74c3c', type: 'line' },
+			{ label: 'Frequência', color: '#e74c3c', type: 'bar' },
 			{ label: 'Bayes Est.', color: '#f39c12', type: 'line' },
 			{ label: 'MAP Est.', color: '#8e44ad', type: 'line' }
 		];
@@ -176,18 +176,37 @@
 			.duration(500)
 			.call(d3.axisLeft(yScale).tickFormat(d3.format(".2f")));
 		
-		// Update posterior bars
-		const bars = g.selectAll(".posterior-bar")
+		// Update posterior bars (left half of each band)
+		const posteriorBars = g.selectAll(".posterior-bar")
 			.data(posterior);
 		
-		bars.enter()
+		posteriorBars.enter()
 			.append("rect")
 			.attr("class", "posterior-bar")
-			.merge(bars)
-			.attr("x", (d, i) => xScale((i + 1).toString()) || 0)
-			.attr("width", xScale.bandwidth())
+			.merge(posteriorBars)
+			.attr("x", (d, i) => (xScale((i + 1).toString()) || 0))
+			.attr("width", xScale.bandwidth() * 0.45)
 			.attr("fill", currentColor)
-			.attr("opacity", 0.7)
+			.attr("opacity", 0.8)
+			.attr("stroke", "white")
+			.attr("stroke-width", 1)
+			.transition()
+			.duration(500)
+			.attr("y", d => yScale(d))
+			.attr("height", d => height - yScale(d));
+		
+		// Update frequency bars (right half of each band)
+		const frequencyBars = g.selectAll(".frequency-bar")
+			.data(empiricalProbs);
+		
+		frequencyBars.enter()
+			.append("rect")
+			.attr("class", "frequency-bar")
+			.merge(frequencyBars)
+			.attr("x", (d, i) => (xScale((i + 1).toString()) || 0) + xScale.bandwidth() * 0.5)
+			.attr("width", xScale.bandwidth() * 0.45)
+			.attr("fill", "#e74c3c")
+			.attr("opacity", 0.8)
 			.attr("stroke", "white")
 			.attr("stroke-width", 1)
 			.transition()
@@ -212,17 +231,27 @@
 			.attr("stroke-dasharray", "5,5")
 			.attr("d", line);
 		
-		// Empirical line
-		if (currentData.throws.length > 0) {
-			g.selectAll(".empirical-line").remove();
-			g.append("path")
-				.datum(empiricalProbs)
-				.attr("class", "empirical-line")
-				.attr("fill", "none")
-				.attr("stroke", "#e74c3c")
-				.attr("stroke-width", 2)
-				.attr("d", line);
-		}
+		// Add 1/6 baseline line
+		g.selectAll(".baseline-line").remove();
+		g.append("line")
+			.attr("class", "baseline-line")
+			.attr("x1", 0)
+			.attr("x2", width)
+			.attr("y1", yScale(1/6))
+			.attr("y2", yScale(1/6))
+			.attr("stroke", "#666")
+			.attr("stroke-dasharray", "5,5")
+			.attr("stroke-width", 2);
+		
+		g.selectAll(".baseline-text").remove();
+		g.append("text")
+			.attr("class", "baseline-text")
+			.attr("x", width - 5)
+			.attr("y", yScale(1/6) - 5)
+			.attr("fill", "#666")
+			.style("text-anchor", "end")
+			.style("font-size", "12px")
+			.text("1/6 (não viciado)");
 		
 		// Bayes estimator line
 		g.selectAll(".bayes-line").remove();
@@ -368,6 +397,9 @@
 		max-width: 1400px;
 		margin: 0 auto;
 		padding: 20px;
+		min-height: calc(100vh - 80px);
+		display: flex;
+		flex-direction: column;
 	}
 	
 	.header {
@@ -404,6 +436,7 @@
 		grid-template-columns: 300px 1fr;
 		gap: 30px;
 		margin-bottom: 30px;
+		flex: 1;
 	}
 	
 	.controls-section {
