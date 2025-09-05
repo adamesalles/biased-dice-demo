@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  biased-dice-demo:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    volumes:
+      - ./data:/app/data  # Optional: for persistent data storage
