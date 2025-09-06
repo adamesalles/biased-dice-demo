@@ -35,7 +35,7 @@
 			.padding(0.1);
 		
 		const yScale = d3.scaleLinear()
-			.domain([0, 0.5])
+			.domain([0, 1.0])
 			.range([height, 0]);
 		
 		// Axes
@@ -50,7 +50,8 @@
 			.text("Face do Dado");
 		
 		g.append("g")
-			.call(d3.axisLeft(yScale).tickFormat(d3.format(".1%")))
+			.attr("class", "y-axis")
+			.call(d3.axisLeft(yScale).tickFormat(d3.format(".0%")))
 			.append("text")
 			.attr("transform", "rotate(-90)")
 			.attr("y", -50)
@@ -80,7 +81,7 @@
 			.attr("fill", "#666")
 			.style("text-anchor", "end")
 			.style("font-size", "12px")
-			.text("1/6 (não viciado)");
+			.text("1/6 (não-viesado)");
 	}
 	
 	function updateHistogram(data: { throws: number[], counts: number[] }) {
@@ -94,21 +95,14 @@
 			.padding(0.1);
 		
 		const yScale = d3.scaleLinear()
-			.domain([0, Math.max(0.5, d3.max(probabilities) || 0)])
+			.domain([0, 1.0])
 			.range([height, 0]);
 		
 		// Update y-axis
-		g.select(".y-axis").remove();
-		g.append("g")
-			.attr("class", "y-axis")
-			.call(d3.axisLeft(yScale).tickFormat(d3.format(".1%")))
-			.append("text")
-			.attr("transform", "rotate(-90)")
-			.attr("y", -50)
-			.attr("x", -height / 2)
-			.attr("fill", "black")
-			.style("text-anchor", "middle")
-			.text("Probabilidade");
+		g.select(".y-axis")
+			.transition()
+			.duration(300)
+			.call(d3.axisLeft(yScale).tickFormat(d3.format(".0%")));
 		
 		// Update bars
 		const bars = g.select(".bars")

@@ -4,8 +4,6 @@
 	import { diceData, priors, diceColors } from './stores.js';
 	import { 
 		calculateBayesianPosterior, 
-		calculateBayesEstimator, 
-		calculateMAPEstimator,
 		calculateProbabilities
 	} from './diceUtils.js';
 	
@@ -19,8 +17,6 @@
 	$: currentData = $diceData[selectedDice];
 	$: currentColor = $diceColors[selectedDice];
 	$: posterior = calculateBayesianPosterior(priorInputs, currentData.counts);
-	$: bayesEstimator = calculateBayesEstimator(posterior);
-	$: mapEstimator = calculateMAPEstimator(priorInputs, currentData.counts);
 	$: empiricalProbs = calculateProbabilities(currentData.counts);
 	
 	onMount(() => {
@@ -73,7 +69,7 @@
 			.padding(0.1);
 		
 		const yScale = d3.scaleLinear()
-			.domain([0, 0.6])
+			.domain([0, 1.0])
 			.range([height, 0]);
 		
 		// Axes
@@ -91,7 +87,7 @@
 		
 		g.append("g")
 			.attr("class", "y-axis")
-			.call(d3.axisLeft(yScale).tickFormat(d3.format(".2f")))
+			.call(d3.axisLeft(yScale).tickFormat(d3.format(".0%")))
 			.append("text")
 			.attr("transform", "rotate(-90)")
 			.attr("y", -40)
@@ -108,10 +104,8 @@
 		
 		const legendData = [
 			{ label: 'Prior', color: '#bdc3c7', type: 'line' },
-			{ label: 'Posterior', color: currentColor, type: 'bar' },
-			{ label: 'Frequência', color: '#e74c3c', type: 'bar' },
-			{ label: 'Bayes Est.', color: '#f39c12', type: 'line' },
-			{ label: 'MAP Est.', color: '#8e44ad', type: 'line' }
+			{ label: 'Posteriori', color: '#27ae60', type: 'bar' },
+			{ label: 'Frequência', color: currentColor, type: 'bar' }
 		];
 		
 		legendData.forEach((d, i) => {
@@ -157,24 +151,16 @@
 			.range([0, width])
 			.padding(0.1);
 		
-		const maxY = Math.max(
-			d3.max(posterior) || 0,
-			d3.max(priorInputs) || 0,
-			d3.max(empiricalProbs) || 0,
-			d3.max(bayesEstimator) || 0,
-			d3.max(mapEstimator) || 0,
-			0.4
-		);
 		
 		const yScale = d3.scaleLinear()
-			.domain([0, maxY * 1.1])
+			.domain([0, 1.0])
 			.range([height, 0]);
 		
 		// Update y-axis
 		g.select(".y-axis")
 			.transition()
 			.duration(500)
-			.call(d3.axisLeft(yScale).tickFormat(d3.format(".2f")));
+			.call(d3.axisLeft(yScale).tickFormat(d3.format(".0%")));
 		
 		// Update posterior bars (left half of each band)
 		const posteriorBars = g.selectAll(".posterior-bar")
@@ -186,7 +172,7 @@
 			.merge(posteriorBars)
 			.attr("x", (d, i) => (xScale((i + 1).toString()) || 0))
 			.attr("width", xScale.bandwidth() * 0.45)
-			.attr("fill", currentColor)
+			.attr("fill", "#27ae60")
 			.attr("opacity", 0.8)
 			.attr("stroke", "white")
 			.attr("stroke-width", 1)
@@ -205,7 +191,7 @@
 			.merge(frequencyBars)
 			.attr("x", (d, i) => (xScale((i + 1).toString()) || 0) + xScale.bandwidth() * 0.5)
 			.attr("width", xScale.bandwidth() * 0.45)
-			.attr("fill", "#e74c3c")
+			.attr("fill", currentColor)
 			.attr("opacity", 0.8)
 			.attr("stroke", "white")
 			.attr("stroke-width", 1)
@@ -251,42 +237,22 @@
 			.attr("fill", "#666")
 			.style("text-anchor", "end")
 			.style("font-size", "12px")
-			.text("1/6 (não viciado)");
+			.text("1/6 (laranja)");
 		
-		// Bayes estimator line
-		g.selectAll(".bayes-line").remove();
-		g.append("path")
-			.datum(bayesEstimator)
-			.attr("class", "bayes-line")
-			.attr("fill", "none")
-			.attr("stroke", "#f39c12")
-			.attr("stroke-width", 2)
-			.attr("stroke-dasharray", "3,3")
-			.attr("d", line);
 		
-		// MAP estimator line
-		g.selectAll(".map-line").remove();
-		g.append("path")
-			.datum(mapEstimator)
-			.attr("class", "map-line")
-			.attr("fill", "none")
-			.attr("stroke", "#8e44ad")
-			.attr("stroke-width", 2)
-			.attr("stroke-dasharray", "2,2")
-			.attr("d", line);
 	}
 </script>
 
 <div class="bayesian-analysis">
 	<div class="header">
 		<button class="back-btn" on:click={onBack}>← Voltar</button>
-		<h1>Análise Bayesiana: {selectedDice === 'biased' ? 'Dado Viciado' : 'Dado Não Viciado'}</h1>
+		<h1>Análise Bayesiana: {selectedDice === 'biased' ? 'Dado Azul' : 'Dado Laranja'}</h1>
 	</div>
 	
 	<div class="content">
 		<div class="controls-section">
 			<div class="prior-controls">
-				<h3>Configurar Prior</h3>
+				<h3>Configurar Priori</h3>
 				<div class="prior-inputs">
 					{#each priorInputs as prior, i}
 						<div class="prior-input">
@@ -316,7 +282,7 @@
 					<strong>Observações:</strong> {currentData.throws.length} jogadas
 				</div>
 				<div class="stat-row">
-					<strong>Distribuição das faces:</strong> [{currentData.counts.join(', ')}]
+					<strong>Distribuição das faces:</strong><br> [{currentData.counts.join(', ')}]
 				</div>
 			</div>
 		</div>
@@ -325,9 +291,9 @@
 			<h3>Distribuições de Probabilidade</h3>
 			<svg 
 				bind:this={svgElement}
-				width="800" 
-				height="400"
-				viewBox="0 0 800 400"
+				width="900" 
+				height="350"
+				viewBox="0 0 900 350"
 				style="max-width: 100%; height: auto;"
 			></svg>
 		</div>
@@ -336,22 +302,16 @@
 			<h3>Formulação Matemática</h3>
 			<div class="math-content">
 				<div class="formula">
-					<h4>Modelo Multinomial com Prior Dirichlet</h4>
+					<h4>Modelo Multinomial com Priori Dirichlet</h4>
 					{#if mathJaxReady}
 						<p>
-							{'$$\\text{Likelihood: } P(\\mathbf{x} | \\boldsymbol{\\theta}) = \\text{Multinomial}(\\mathbf{x} | n, \\boldsymbol{\\theta})$$'}
+							{'$$\\text{Verossimilhança: } P(\\mathbf{x} | \\boldsymbol{\\theta}) = \\text{Multinomial}(\\mathbf{x} | n, \\boldsymbol{\\theta})$$'}
 						</p>
 						<p>
-							{'$$\\text{Prior: } P(\\boldsymbol{\\theta}) = \\text{Dir}(\\boldsymbol{\\theta} | \\boldsymbol{\\alpha})$$'}
+							{'$$\\text{Priori: } P(\\boldsymbol{\\theta}) = \\text{Dir}(\\boldsymbol{\\theta} | \\boldsymbol{\\alpha})$$'}
 						</p>
 						<p>
-							{'$$\\text{Posterior: } P(\\boldsymbol{\\theta} | \\mathbf{x}) = \\text{Dir}(\\boldsymbol{\\theta} | \\boldsymbol{\\alpha} + \\mathbf{x})$$'}
-						</p>
-						<p>
-							{'$$\\text{Estimador de Bayes: } \\hat{\\boldsymbol{\\theta}}_{\\text{Bayes}} = \\frac{\\boldsymbol{\\alpha} + \\mathbf{x}}{|\\boldsymbol{\\alpha}| + n}$$'}
-						</p>
-						<p>
-							{'$$\\text{Estimador MAP: } \\hat{\\boldsymbol{\\theta}}_{\\text{MAP}} = \\frac{\\max(0, \\boldsymbol{\\alpha} + \\mathbf{x} - 1)}{\\max(1, |\\boldsymbol{\\alpha}| + n - k)}$$'}
+							{'$$\\text{Posteriori: } P(\\boldsymbol{\\theta} | \\mathbf{x}) = \\text{Dir}(\\boldsymbol{\\theta} | \\boldsymbol{\\alpha} + \\mathbf{x})$$'}
 						</p>
 					{/if}
 				</div>
@@ -363,11 +323,9 @@
 							<thead>
 								<tr>
 									<th>Face</th>
-									<th>Prior</th>
+									<th>Priori</th>
 									<th>Observações</th>
-									<th>Posterior</th>
-									<th>Bayes Est.</th>
-									<th>MAP Est.</th>
+									<th>Posteriori</th>
 									<th>Empírica</th>
 								</tr>
 							</thead>
@@ -375,12 +333,10 @@
 								{#each [1,2,3,4,5,6] as face, i}
 									<tr>
 										<td>{face}</td>
-										<td>{priorInputs[i].toFixed(3)}</td>
+										<td>{(priorInputs[i] * 100).toFixed(1)}%</td>
 										<td>{currentData.counts[i]}</td>
-										<td>{posterior[i].toFixed(3)}</td>
-										<td>{bayesEstimator[i].toFixed(3)}</td>
-										<td>{mapEstimator[i].toFixed(3)}</td>
-										<td>{empiricalProbs[i].toFixed(3)}</td>
+										<td>{(posterior[i] * 100).toFixed(1)}%</td>
+										<td>{(empiricalProbs[i] * 100).toFixed(1)}%</td>
 									</tr>
 								{/each}
 							</tbody>
@@ -519,7 +475,7 @@
 	}
 	
 	.mathematical-formulation h3 {
-		margin: 0 0 20px 0;
+		margin: 0 0 10px 0;
 		color: #555;
 		text-align: center;
 	}

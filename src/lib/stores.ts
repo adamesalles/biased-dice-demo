@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store';
 
 export const diceColors = writable({
-	biased: '#3498db',     // Blue
+	biased: '#068FCB',     // Blue
 	unbiased: '#e67e22'    // Orange
 });
 

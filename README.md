@@ -1,6 +1,6 @@
-# Demonstração de Dados Viciados
+# Demonstração de Dados com Cores
 
-Uma aplicação web interativa para demonstrar conceitos de inferência estatística usando dados viciados e não viciados. Desenvolvida em SvelteKit para uso educacional em visitações públicas.
+Uma aplicação web interativa para demonstrar conceitos de inferência estatística usando dados azuis e laranjas. Desenvolvida em SvelteKit para uso educacional em visitações públicas.
 
 ## Características
 
@@ -14,7 +14,7 @@ Uma aplicação web interativa para demonstrar conceitos de inferência estatís
 ## Funcionalidades
 
 ### Tela Principal
-- Duas seções: dado não viciado (laranja) e dado viciado (azul)
+- Duas seções: dado laranja e dado azul
 - D-pad para registro manual de jogadas (faces 1-6)
 - Histogramas com linha tracejada indicando probabilidade 1/6
 - Botões de simulação com animação de convergência
@@ -72,10 +72,10 @@ export const diceColors = writable({
 ```
 
 ### Viés do Dado
-O comportamento do dado viciado pode ser ajustado em `src/lib/diceUtils.ts`:
+O comportamento do dado azul pode ser ajustado em `src/lib/diceUtils.ts`:
 
 ```typescript
-// Probabilidades para faces 1-6 do dado viciado
+// Probabilidades para faces 1-6 do dado azul
 const weights = [0.05, 0.05, 0.1, 0.15, 0.25, 0.4];
 ```
 
