@@ -58,7 +58,7 @@
 	{/if}
 	
 	<footer>
-		<p>Feito por Eduardo Adame (@eduadame) - FGV EMAp</p>
+		<p>Feito por Eduardo Adame (@eduadame) - FGV EMAp. Idealizado por Bald Comics (@bald.comics) e Matemática é para Todos (matematicaeparatodos.oficial)</p>
 	</footer>
 </main>
 
