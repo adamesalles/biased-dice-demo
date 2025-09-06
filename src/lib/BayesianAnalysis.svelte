@@ -103,7 +103,7 @@
 			.attr("transform", `translate(${width - 200}, 20)`);
 		
 		const legendData = [
-			{ label: 'Prior', color: '#bdc3c7', type: 'line' },
+			{ label: 'Priori', color: '#bdc3c7', type: 'line' },
 			{ label: 'Posteriori', color: '#27ae60', type: 'bar' },
 			{ label: 'Frequência', color: currentColor, type: 'bar' }
 		];
@@ -237,7 +237,7 @@
 			.attr("fill", "#666")
 			.style("text-anchor", "end")
 			.style("font-size", "12px")
-			.text("1/6 (laranja)");
+			.text("1/6 (não enviesado)");
 		
 		
 	}

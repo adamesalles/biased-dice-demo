@@ -3,8 +3,8 @@ export function createDiceBiasFunction(diceType: 'biased' | 'unbiased'): () => n
 		return () => Math.floor(Math.random() * 6) + 1;
 	}
 	
-	// Biased dice: heavily favors 6, then 5, then 4
-	const weights = [0.05, 0.05, 0.1, 0.15, 0.25, 0.4]; // Probabilities for faces 1-6
+	// Biased dice: heavily favors 6
+	const weights = [0.14, 0.14, 0.14, 0.14, 0.14, 0.3]; // Probabilities for faces 1-6
 	const cumulativeWeights = weights.reduce((acc, weight, index) => {
 		acc[index] = weight + (acc[index - 1] || 0);
 		return acc;
