@@ -81,7 +81,7 @@
 			.attr("fill", "#666")
 			.style("text-anchor", "end")
 			.style("font-size", "12px")
-			.text("1/6 (não-viesado)");
+			.text("1/6 (dado justo)");
 	}
 	
 	function updateHistogram(data: { throws: number[], counts: number[] }) {
