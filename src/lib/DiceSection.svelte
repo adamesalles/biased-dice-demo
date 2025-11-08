@@ -144,11 +144,11 @@
 	h2 {
 		margin: 0;
 		font-size: 1.6rem;
-		font-weight: 500;
+		font-weight: bold;
 	}
 	
 	.analyze-btn {
-		background: #34495e;
+		background: #2A5AB3;
 		color: white;
 		border: none;
 		padding: 10px 20px;
@@ -159,7 +159,7 @@
 	}
 	
 	.analyze-btn:hover {
-		background: #2c3e50;
+		background: #2A5AB3;
 	}
 	
 	.section-content {

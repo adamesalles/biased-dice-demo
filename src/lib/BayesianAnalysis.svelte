@@ -366,7 +366,7 @@
 	}
 	
 	.back-btn {
-		background: #34495e;
+		background: #2A5AB3;
 		color: white;
 		border: none;
 		padding: 10px 20px;
@@ -377,11 +377,11 @@
 	}
 	
 	.back-btn:hover {
-		background: #2c3e50;
+		background: #2A5AB3;
 	}
-	
+
 	h1 {
-		color: #2c3e50;
+		color: #2A5AB3;
 		font-size: 2rem;
 		font-weight: 300;
 		margin: 0;
@@ -487,7 +487,7 @@
 	}
 	
 	.formula h4, .results h4 {
-		color: #2c3e50;
+		color: #2A5AB3;
 		margin-bottom: 15px;
 	}
 	

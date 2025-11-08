@@ -91,10 +91,10 @@
 
 	h1 {
 		text-align: center;
-		color: #2c3e50;
+		color: #2A5AB3;
 		margin-bottom: 40px;
 		font-size: 2.2rem;
-		font-weight: 300;
+		font-weight: bold;
 	}
 
 	.dice-container {
@@ -126,7 +126,7 @@
 	}
 	
 	footer {
-		background: #2c3e50;
+		background: #2A5AB3;
 		color: white;
 		text-align: center;
 		padding: 15px 20px;
